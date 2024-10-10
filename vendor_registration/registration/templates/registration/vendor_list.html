@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #01508c;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        input[type="text"], select {
+            padding: 8px;
+            width: 23%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            box-shadow: 1px 1px 3px #e9ecef;
+        }
+        button {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #01508c;
+            color: white;
+        }
+        button:hover {
+            background-color: #ffc814;
+            color: #01508c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 1px 1px 5px #e9ecef;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #01508c;
+            color: white;
+        }
+        td input[type="checkbox"] {
+            margin: 0;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 12px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .pagination a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Vendor List</h1>
+
+    <!-- Filter and Search Form -->
+    <form method="get">
+        <input type="text" name="vendor_name" placeholder="Search by Vendor Name" value="{{ vendor_name }}">
+        <select name="vendor_type">
+            <option value="">Filter by Vendor Type</option>
+            <option value="Public Limited Co" {% if vendor_type == 'Public Limited Co' %}selected{% endif %}>Public Limited Co</option>
+            <option value="Partnership Co" {% if vendor_type == 'Partnership Co' %}selected{% endif %}>Partnership Co</option>
+            <option value="Proprietorship" {% if vendor_type == 'Proprietorship' %}selected{% endif %}>Proprietorship</option>
+            <option value="Gov Sector" {% if vendor_type == 'Gov Sector' %}selected{% endif %}>Gov Sector</option>
+            <option value="Others" {% if vendor_type == 'Others' %}selected{% endif %}>Others</option>
+        </select>
+
+        <select name="company_status">
+            <option value="">Filter by Company Status</option>
+            <option value="Manufacturer" {% if company_status == 'Manufacturer' %}selected{% endif %}>Manufacturer</option>
+            <option value="Authorised Dealer" {% if company_status == 'Authorised Dealer' %}selected{% endif %}>Authorised Dealer</option>
+            <option value="Stockist/Trader" {% if company_status == 'Stockist/Trader' %}selected{% endif %}>Stockist/Trader</option>
+            <option value="Importer/Indian Agent" {% if company_status == 'Importer/Indian Agent' %}selected{% endif %}>Importer/Indian Agent</option>
+            <option value="Service Provider" {% if company_status == 'Service Provider' %}selected{% endif %}>Service Provider</option>
+        </select>
+
+        <select name="state">
+            <option value="">Filter by State</option>
+            {% for value, label in state_choices %}
+                <option value="{{ value }}" {% if state == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Apply Filters</button>
+        <button type="submit" name="export" value="csv">Export Selected to CSV</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Vendor Name</th>
+                <th>Vendor Type</th>
+                <th>GST No</th>
+                <th>PAN No</th>
+                <th>Company Status</th>
+                <th>State</th>
+                <th>Banking Name</th>
+                <th>Bank</th>
+                <th>IFSC</th>
+                <th>Account Number</th>
+                <th>Address</th>
+                <th>STD Code with Phone No</th>
+                <th>Contact Person</th>
+                <th>City</th>
+                <th>Fax</th>
+                <th>Contact Person Designation</th>
+                <th>Website</th>
+                <th>MSME</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Business Description</th>
+                <th>Pin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vendor in vendors %}
+            <tr>
+                <td><input type="checkbox" name="vendor_ids" value="{{ vendor.id }}"></td>
+                <td>{{ vendor.vendor_name }}</td>
+                <td>{{ vendor.vendor_type }}</td>
+                <td>{{ vendor.gst_no }}</td>
+                <td>{{ vendor.pan_no }}</td>
+                <td>{{ vendor.company_status }}</td>
+                <td>{{ vendor.state }}</td>
+                <td>{{ vendor.banking_name }}</td>
+                <td>{{ vendor.bank }}</td>
+                <td>{{ vendor.ifsc }}</td>
+                <td>{{ vendor.account_number }}</td>
+                <td>{{ vendor.address }}</td>
+                <td>{{ vendor.std_code_phone_no }}</td>
+                <td>{{ vendor.contact_person }}</td>
+                <td>{{ vendor.city }}</td>
+                <td>{{ vendor.fax }}</td>
+                <td>{{ vendor.contact_person_designation }}</td>
+                <td>{{ vendor.website }}</td>
+                <td>{{ vendor.is_msmse }}</td>
+                <td>{{ vendor.mobile }}</td>
+                <td>{{ vendor.email }}</td>
+                <td>{{ vendor.business_description }}</td>
+                <td>{{ vendor.pin }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <span>Page {{ vendors.number }} of {{ vendors.paginator.num_pages }}</span>
+        <div>
+            {% if vendors.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ vendors.previous_page_number }}">previous</a>
+            {% endif %}
+
+            {% if vendors.has_next %}
+            <a href="?page={{ vendors.next_page_number }}">next</a>
+            <a href="?page={{ vendors.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
